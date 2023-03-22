@@ -159,6 +159,28 @@ dataFrame2 <- data.frame(
 ```
 
   * Anything your learn about list also works on data frame
+  
+# Operations on Vectors
+
+```{r}
+# how many elements inside
+length(list1)
+length(dataframe2)
+length(atomicVec0)
+print(atomicVec1)
+atomicVec1
+length(atomicVec1)
+ 
+# check element names
+names(list1)
+list2
+names(list2)
+names(dataframe2)
+# colnames(dataframe2)
+```
+
+
+# Operation on list 
 
 
 
