@@ -179,9 +179,113 @@ names(dataframe2)
 # colnames(dataframe2)
 ```
 
+# Obtain one sheet from a google sheet url
+
+```{r}
+googlesheets4::read_sheet(
+  "https://docs.google.com/spreadsheets/d/187LRBCzcHCetea9ZsCnWOUFDdXCfVIZx3R2vvPsmh4I/edit#gid=91650247",
+  sheet = "Form Responses 1"
+) -> attendanceData
+```
+
 
 # Operation on list 
 
 
+```{r}
+# number of columns
+length(attendanceData)
 
+# column names
+names(attendanceData)
+```
+
+## only for data frame
+
+```{r}
+# number of rows
+nrow(attendanceData)
+```
+
+## retrieve one element from list
+
+```{r}
+# $ is for list. Since data frame is a list fundamentally, it works here
+attendanceData$Timestamp
+attendanceData$`Email Address` # back tick ` for special element names
+```
+
+```{r}
+list(`Email Address`="tpemartin@gmail.com")
+```
+
+
+# Time 
+
+## Check if R understand it correctly
+
+```{r}
+attendanceData$Timestamp |> class()
+# same as
+class(attendanceData$Timestamp)
+```
+
+
+```{r}
+timestampAsCharacter = as.character(attendanceData$Timestamp)
+timestampAsCharacter |> class()
+```
+
+```{r}
+print(attendanceData$Timestamp)
+print(timestampAsCharacter)
+```
+## change time zone
+
+  * only works on Date/Time class vector
+
+```{r}
+attendanceData$Timestamp |> class()
+
+```
+
+### check available time zones
+
+```{r}
+OlsonNames() -> tzs
+class(tzs)
+tzs
+as.list(tzs) |> View()
+```
+
+> Filter character vector based on some criteria in R
+
+To filter a character vector based on some criteria in R, you can use the "grep" function. Here's an example:
+
+Let's say you have a character vector "my_vector" containing the following elements:
+
+```
+my_vector <- c("apple", "banana", "orange", "grape", "pear", "pineapple")
+```
+
+If you want to filter this vector to only include elements that contain the letter "a", you can use the following code:
+
+```
+filtered_vector <- my_vector[grep("a", my_vector)]
+```
+
+This code creates a new vector called "filtered_vector" that only includes elements from "my_vector" that contain the letter "a". The "grep" function searches each element in "my_vector" for the pattern "a" and returns a vector of logical values indicating which elements match the pattern. The square brackets then subset "my_vector" to only include the elements where the logical value is TRUE.
+
+You can adjust the pattern in the "grep" function to match different criteria. For example, if you only want to include elements that start with the letter "p", you can use the following code:
+
+```
+filtered_vector <- my_vector[grep("^p", my_vector)]
+```
+
+In this case, the pattern "^p" matches any element that starts with the letter "p".
+
+```{r}
+tzs |>
+  
+```
 
