@@ -106,7 +106,60 @@ list3 = list(name="Mary", age=32, isMarried=TRUE)
 ```
 
 
-##
+## data frame 
+
+is a special list.
+
+  * element name becomes column name.
+  
+  * element values are all atomic vector of the same length
+
+Consider `list2`
+
+```{r}
+list2 <- list(
+  list("Mary", 32, TRUE), 
+  list("Martin", 40, FALSE),
+  list("Janet", 20, TRUE)
+)
+class(list2)
+```
+
+  
+```{r}
+dataFrame2 <- list(
+  name = c("Mary", "Martin", "Janet"),
+  age = c(32, 40, 20),
+  isMarried = c(T, F, T) 
+)
+
+class(dataFrame2)
+
+dataframe2 = data.frame(dataFrame2)
+
+class(dataframe2)
+```
+
+data frame is a list that has been parsed.
+
+
+```{r}
+# it is the same as
+dataFrame2 <- data.frame(list(
+  name = c("Mary", "Martin", "Janet"),
+  age = c(32, 40, 20),
+  isMarried = c(T, F, T) 
+))
+# or 
+dataFrame2 <- data.frame(
+  name = c("Mary", "Martin", "Janet"),
+  age = c(32, 40, 20),
+  isMarried = c(T, F, T) 
+)
+```
+
+  * Anything your learn about list also works on data frame
+
 
 
 
