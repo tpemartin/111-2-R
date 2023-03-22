@@ -10,3 +10,44 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Create a google form to take attendance
 
+# Time zone
+
+## Create a google form to take attendance
+
+## Import data from google sheets
+
+> how to import data from google sheets in R
+
+### ChatGPT answer
+
+To import data from Google Sheets in R, you can use the "googlesheets4" package. Here are the steps:
+
+1. Install the "googlesheets4" package using the following command:
+
+```
+install.packages("googlesheets4")
+```
+
+2. Load the package using the following command:
+
+```
+library(googlesheets4)
+```
+
+3. Authenticate with Google Sheets by running the following command:
+
+```
+gs4_auth()
+```
+
+4. Once you are authenticated, you can import data from a Google Sheet by running the following command:
+
+```
+my_sheet <- gs4_get("https://docs.google.com/spreadsheets/d/1abcdefg/edit#gid=123456789")
+```
+
+Replace the URL with the URL of the Google Sheet that you want to import. The "gid" parameter in the URL specifies the sheet ID. If you want to import a specific sheet, make sure to include the correct sheet ID in the URL.
+
+5. Once the data is imported, you can use standard R functions to manipulate and analyze the data.
+
+Note that you will need to have permissions to access the Google Sheet in order to import the data.
