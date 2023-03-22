@@ -8,3 +8,5 @@ date: "2023-03-22"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Create a google form to take attendance
+
