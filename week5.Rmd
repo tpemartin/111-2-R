@@ -51,3 +51,62 @@ Replace the URL with the URL of the Google Sheet that you want to import. The "g
 5. Once the data is imported, you can use standard R functions to manipulate and analyze the data.
 
 Note that you will need to have permissions to access the Google Sheet in order to import the data.
+
+### Code
+
+```{r}
+library(googlesheets4)
+```
+
+```{r}
+gs4_auth()
+```
+
+```{r}
+mySheet <- gs4_get("https://docs.google.com/spreadsheets/d/187LRBCzcHCetea9ZsCnWOUFDdXCfVIZx3R2vvPsmh4I/edit#gid=91650247")
+```
+
+
+# List
+
+Two types of vectors
+
+  * Atomic vectors: all element values are of the same type.
+  
+```{r}
+atomicVec0 <- c(2, 23.1, 22, 100, -100, Inf, -Inf, NA)
+atomicVec1 <- c(T, T, F, FALSE, TRUE, FALSE, NA)
+atomicVec2 <- c("Martin", "Janet", "Jim")
+```
+
+  * list: no restriction on element values, and is created using `list(...)`
+  
+```{r}
+# three element values
+list0 <- list(2, "Martin", FALSE)
+list1 <- list(
+  2, 
+   c("Martin", "Janet", "Jim"),
+  FALSE
+)
+# vector of length 3
+list2 <- list(
+  list("Mary", 32, TRUE), 
+  list("Martin", 40, FALSE),
+  list("Janet", 20, TRUE)
+)
+```
+ 
+    * list allows user to nest informations. 
+
+## Element names
+
+```{r}
+list3 = list(name="Mary", age=32, isMarried=TRUE)
+```
+
+
+##
+
+
+
