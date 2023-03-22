@@ -285,7 +285,48 @@ filtered_vector <- my_vector[grep("^p", my_vector)]
 In this case, the pattern "^p" matches any element that starts with the letter "p".
 
 ```{r}
-tzs |>
-  
+# in conclusion
+# to filter those that has "a"
+my_vector <- c("apple", "banana", "orange", "grape", "pear", "pineapple")
+filtered_vector <- my_vector[grep("a", my_vector)]
+
+```
+
+
+
+```{r}
+# filter from tzs (also my_vector) those that contains "Asia"
+my_vector <- tzs
+filtered_vector <- my_vector[grep("Asia", my_vector)]
+
+filtered_vector
+```
+## convert to Taipei time zone
+
+```{r}
+attendanceData$Timestamp |> class()
+attendanceData$Timestamp |>
+  lubridate::with_tz(
+    tzone="Asia/Taipei"
+  )
+```
+
+## Fixed wrong time zone
+
+```{r}
+attendanceData$Timestamp |>
+  lubridate::force_tz(
+    tzone = "Asia/Taipei"
+  ) -> attendanceData$Timestamp
+```
+
+```{r}
+print(attendanceData$Timestamp)
+```
+```{r}
+attendanceData$Timestamp |> 
+  lubridate::with_tz(tzone="America/New_York")
+attendanceData$Timestamp |>
+  lubridate::with_tz(tzone="America/Los_Angeles")
 ```
 
