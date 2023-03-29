@@ -155,7 +155,7 @@ filteredCourses = targetCourses[positionIndices, ] #4
 
 ```
 
-### Approach 2: chatGPT
+### Approach 2: chatGPT subset
 
 > How to filter a data frame based on some criterion in R
 
@@ -321,11 +321,46 @@ df <- data.frame(
 )
 
 # filter the data frame to only include females who are over 25 years old
+df$Gender == "Female"
+df$Age > 25
+
 female_over_25_df <- filter(df, Gender == "Female" & Age > 25)
 
+
+df |> 
+  filter(
+    Gender == "Female",
+    Age > 25
+  )
 # display the resulting data frame
 female_over_25_df
 ```
 
+  * `&` link multiple **logical expression** as AND joint criteria.
+
 
   * [dplyr website](https://dplyr.tidyverse.org/)
+  
+    * function's first input is always data frame.
+    
+    * functions's output is always data frame.
+    
+```
+library(dplyr)
+
+df |> 
+  fun1() |>
+  fun2() |>
+  fun3() 
+
+```
+
+```{r}
+library(dplyr)
+targetCourses |>
+  dplyr::filter(
+    grepl("週三",上課時間教室)
+  )
+```
+
+
