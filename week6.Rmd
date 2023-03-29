@@ -19,7 +19,21 @@ remotes::install_github("tpemartin/econR2")
 
 ## Usage
 
+To download from Github.com
+
 -    Copy a Github link
+
+    ![](https://raw.githubusercontent.com/tpemartin/111-2-R/main/image/github-link.png){width="397"}
+
+-   **Addins** \>
+
+    ![](https://raw.githubusercontent.com/tpemartin/111-2-R/main/image/github-download.png){width="512"}
+
+Once download addin has been executed, you can refresh its local content by
+
+-   **Addins** \>
+
+![](https://raw.githubusercontent.com/tpemartin/111-2-R/main/image/github-refresh.png){width="512"}
 
 # Project
 
