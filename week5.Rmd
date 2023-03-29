@@ -314,6 +314,47 @@ attendanceData$Timestamp |>
 ## Fixed wrong time zone
 
 ```{r}
+fun(x, y, z)
+
+x  |>   fun(y, z)
+```
+
+```{r}
+timestampAsCharacter |>
+  lubridate::ymd_hms() |>
+  lubridate::force_tz(tzone="Asia/Taipei") |>
+  lubridate::with_tz(tzone="America/Los_Angeles")
+
+
+lubridate::with_tz(
+  lubridate::force_tz(
+    lubridate::ymd_hms(
+      timestampAsCharacter
+    ), tzone = "Asia/Taipei"
+  ), tzone = "America/Los_Angeles"
+)
+```
+
+```{r}
+
+lubridate::with_tz(
+  lubridate::force_tz(
+    lubridate::ymd_hms(
+      timestampAsCharacter),
+    tzone = "Asia/Taipei"
+  ),
+  tzone = "America/Los_Angeles"
+)
+```
+
+
+```{r}
+fun(x)
+
+x |> fun()
+```
+
+```{r}
 attendanceData$Timestamp |>
   lubridate::force_tz(
     tzone = "Asia/Taipei"
@@ -323,10 +364,20 @@ attendanceData$Timestamp |>
 ```{r}
 print(attendanceData$Timestamp)
 ```
+
 ```{r}
 attendanceData$Timestamp |> 
   lubridate::with_tz(tzone="America/New_York")
 attendanceData$Timestamp |>
   lubridate::with_tz(tzone="America/Los_Angeles")
+```
+
+```{r}
+dplyr::glimpse(attendanceData)
+```
+
+```{r}
+dataframe2 |>
+  googlesheets4::write_sheet(ss="https://docs.google.com/spreadsheets/d/187LRBCzcHCetea9ZsCnWOUFDdXCfVIZx3R2vvPsmh4I/edit#gid=91650247", sheet="new")
 ```
 

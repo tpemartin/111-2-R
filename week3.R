@@ -22,3 +22,4 @@ numeric_x <- as.numeric(x)
 # wrong
 # mean(numeric_x)
 mean(numeric_x, na.rm = TRUE)
+
