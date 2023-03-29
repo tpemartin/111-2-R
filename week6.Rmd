@@ -147,7 +147,7 @@ my_vector[positions] # [postion indices]
 
 ### Approach 1: grep
 
-```{r} 
+```{r}
 targetCourses$上課時間教室 #1
  my_vector <- targetCourses$上課時間教室 #2
  positionIndices = grep("每週三", my_vector) # 3
@@ -194,3 +194,49 @@ over_25_df
 ```
 
 Both `subset()` and `filter()` functions take a data frame as the first argument and a logical expression as the second argument. The logical expression is used to select the rows of the data frame that meet the specified criterion.
+
+
+# Logical expression on characters
+
+
+
+```{r}
+"每週三2~4" == "每週三"
+
+c("每週三2~4", "每週三") == "每週三"
+```
+
+  * `==` totally the same. 
+  
+```{r}
+grep("每週三", c("每週三2~4", "每週三"))
+```
+
+  * grep is used to detect **pattern**
+  
+> How to detect a pattern in a character vector in R?
+
+In R, you can detect a pattern in a character vector using regular expressions. The `grep()` function is commonly used for this purpose. Here's an example:
+
+```
+# create a character vector
+my_vec <- c("apple", "banana", "grape", "pineapple")
+
+# use grep() to detect the pattern "app" in the vector
+grep("app", my_vec)
+
+# output: 1 4
+
+# the output indicates that the pattern "app" is found in the first and fourth elements of the vector (i.e., "apple" and "pineapple")
+
+# you can also use the grepl() function to detect if the pattern is present in a character vector
+grepl("app", my_vec)
+
+# output: TRUE FALSE FALSE TRUE
+
+# the output indicates that the pattern "app" is present in the first and fourth elements of the vector (as TRUE values)
+```
+
+In the `grep()` function, the first argument is the pattern to be detected, and the second argument is the character vector to be searched. The function returns the indices of the elements in the vector that contain the pattern. 
+
+In the `grepl()` function, the first argument is the pattern to be detected, and the second argument is the character vector to be searched. The function returns a logical vector indicating whether the pattern is present in each element of the vector.
