@@ -143,3 +143,50 @@ my_vector[positions] # [postion indices]
 ```
 
 -   [Retrieve multiple elements](https://tpemartin.github.io/NTPU-R-for-Data-Science-EN/element-values.html#retrieve-multiple-element-values)
+
+
+### Approach 1: grep
+
+```{r}
+
+```
+
+### Approach 2: chatGPT
+
+In R, you can filter a data frame based on some criterion using the `subset()` or `filter()` functions. Here are some examples:
+
+Using `subset()` function:
+
+```
+# create a data frame
+df <- data.frame(
+  Name = c("John", "Jane", "Bob", "Alice"),
+  Age = c(25, 30, 20, 35),
+  Gender = c("Male", "Female", "Male", "Female")
+)
+
+# filter the data frame to only include females
+female_df <- subset(df, Gender == "Female")
+
+# display the resulting data frame
+female_df
+```
+
+Using `filter()` function:
+
+```
+# create a data frame
+df <- data.frame(
+  Name = c("John", "Jane", "Bob", "Alice"),
+  Age = c(25, 30, 20, 35),
+  Gender = c("Male", "Female", "Male", "Female")
+)
+
+# filter the data frame to only include people over 25 years old
+over_25_df <- filter(df, Age > 25)
+
+# display the resulting data frame
+over_25_df
+```
+
+Both `subset()` and `filter()` functions take a data frame as the first argument and a logical expression as the second argument. The logical expression is used to select the rows of the data frame that meet the specified criterion.
