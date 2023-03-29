@@ -157,6 +157,8 @@ filteredCourses = targetCourses[positionIndices, ] #4
 
 ### Approach 2: chatGPT
 
+> How to filter a data frame based on some criterion in R
+
 In R, you can filter a data frame based on some criterion using the `subset()` or `filter()` functions. Here are some examples:
 
 Using `subset()` function:
@@ -194,6 +196,22 @@ over_25_df
 ```
 
 Both `subset()` and `filter()` functions take a data frame as the first argument and a logical expression as the second argument. The logical expression is used to select the rows of the data frame that meet the specified criterion.
+
+
+```{r}
+pick <- targetCourses$上課時間教室 == "每週三"
+pick |> table()
+
+# pick <- grep("每週三", targetCourses$上課時間教室)
+pick <- grepl("每週三", targetCourses$上課時間教室)
+pick
+
+filteredCourses <- 
+  subset(targetCourses,
+         grepl(
+           "每週三", targetCourses$上課時間教室))
+View(filteredCourses)
+```
 
 
 # Logical expression on characters
@@ -240,3 +258,53 @@ grepl("app", my_vec)
 In the `grep()` function, the first argument is the pattern to be detected, and the second argument is the character vector to be searched. The function returns the indices of the elements in the vector that contain the pattern. 
 
 In the `grepl()` function, the first argument is the pattern to be detected, and the second argument is the character vector to be searched. The function returns a logical vector indicating whether the pattern is present in each element of the vector.
+
+### Retrive elements by logicals
+
+```{r}
+Name = c("John", "Jane", "Bob", "Alice")
+# position indices
+Name[c(1,4)]
+# logicals
+Name[c(T, F, F, T)]
+```
+
+### Approach 3: use dplyr
+
+  * only work on data frame object
+
+> How to filter a data frame based on some criterion in R using the package dplyr
+
+In R, you can filter a data frame based on some criterion using the `filter()` function from the `dplyr` package. Here's an example:
+
+```
+# load the dplyr package
+library(dplyr)
+
+# create a data frame
+df <- data.frame(
+  Name = c("John", "Jane", "Bob", "Alice"),
+  Age = c(25, 30, 20, 35),
+  Gender = c("Male", "Female", "Male", "Female")
+)
+
+# filter the data frame to only include females
+female_df <- filter(df, Gender == "Female")
+
+# display the resulting data frame
+female_df
+```
+
+In the `filter()` function, the first argument is the data frame to be filtered, and the second argument is the filtering criterion. You can use the `==`, `>`, `<`, `>=`, `<=`, and `!=` operators to specify the criterion. You can also combine multiple criteria using the `&` (and) and `|` (or) operators.
+
+For example, to filter the data frame to only include females who are over 25 years old, you can use the following code:
+
+```
+# filter the data frame to only include females who are over 25 years old
+female_over_25_df <- filter(df, Gender == "Female" & Age > 25)
+
+# display the resulting data frame
+female_over_25_df
+```
+
+This will return a data frame with only one row, containing the information for Alice.
