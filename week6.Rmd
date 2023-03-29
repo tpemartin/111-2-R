@@ -308,3 +308,24 @@ female_over_25_df
 ```
 
 This will return a data frame with only one row, containing the information for Alice.
+
+
+```{r}
+# load the dplyr package
+library(dplyr)
+# create a data frame
+df <- data.frame(
+  Name = c("John", "Jane", "Bob", "Alice"),
+  Age = c(25, 30, 20, 35),
+  Gender = c("Male", "Female", "Male", "Female")
+)
+
+# filter the data frame to only include females who are over 25 years old
+female_over_25_df <- filter(df, Gender == "Female" & Age > 25)
+
+# display the resulting data frame
+female_over_25_df
+```
+
+
+  * [dplyr website](https://dplyr.tidyverse.org/)
