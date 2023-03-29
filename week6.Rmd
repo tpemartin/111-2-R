@@ -124,8 +124,22 @@ targetCourses <- week6$dataSplit$byYear$`107`
 
 1.  What element value has crucial information to answer that question?
 
-2.  
+    ```{r}
+    dplyr::glimpse(targetCourses)
+    View(targetCourses)
+    ```
+
+    ```{r}
+    my_vector <- c("apple", "banana", "orange", "grape", "pear", "pineapple")
+    filtered_vector <- my_vector[grep("b", my_vector)]
+    ```
+
+### Retrive elements by positions or logicals
 
 ```{r}
-
+positions <- grep("p", my_vector)
+print(positions)
+my_vector[positions] # [postion indices]
 ```
+
+-   [Retrieve multiple elements](https://tpemartin.github.io/NTPU-R-for-Data-Science-EN/element-values.html#retrieve-multiple-element-values)
