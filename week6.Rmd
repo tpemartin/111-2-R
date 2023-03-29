@@ -21,9 +21,11 @@ remotes::install_github("tpemartin/econR2")
 
 To download from Github.com
 
--    Copy a Github link
+-   Copy a Github link
 
-    ![](https://raw.githubusercontent.com/tpemartin/111-2-R/main/image/github-link.png){width="397"}
+```         
+![](https://raw.githubusercontent.com/tpemartin/111-2-R/main/image/github-link.png){width="397"}
+```
 
 -   **Addins** \>
 
@@ -53,7 +55,9 @@ dropboxlink = "https://www.dropbox.com/s/6vhwbxnzc0fz3is/90-107%E5%AD%B8%E5%B9%B
 -   Original link has `dl=0`. We need `dl=1`
 
 ```{r}
-courses <- readr::read_csv("https://www.dropbox.com/s/6vhwbxnzc0fz3is/90-107%E5%AD%B8%E5%B9%B4%E5%BA%A6%E5%A4%A7%E5%AD%B8%E9%83%A8%E8%AA%B2%E7%A8%8B%E8%B3%87%E6%96%99.csv?dl=1")
+courses <- readr::read_csv(dropboxlink)
+courses |> 
+  dplyr::glimpse()
 ```
 
 ```{r}
@@ -106,4 +110,22 @@ week6$dataSplit$byYear$`107` |> View()
 ```{r}
 week6$dataSplit$byYear$`107` |> 
   dplyr::glimpse()
+```
+
+## String pattern
+
+## Q1: 每週三有什麼課？
+
+```{r}
+targetCourses <- week6$dataSplit$byYear$`107` 
+```
+
+> In targetCourses what courses are on Wednesday?
+
+1.  What element value has crucial information to answer that question?
+
+2.  
+
+```{r}
+
 ```
