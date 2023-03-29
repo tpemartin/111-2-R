@@ -147,7 +147,11 @@ my_vector[positions] # [postion indices]
 
 ### Approach 1: grep
 
-```{r}
+```{r} 
+targetCourses$上課時間教室 #1
+ my_vector <- targetCourses$上課時間教室 #2
+ positionIndices = grep("每週三", my_vector) # 3
+filteredCourses = targetCourses[positionIndices, ] #4
 
 ```
 
