@@ -16,23 +16,26 @@ courses <- readr::read_csv(dropboxlink)
 ```
 
 ```{r}
-week6 <- list()
+ntpuCourses <- list()
 ```
 
 ## Courses on Wednesday
 
+  * About pulling out subsample based on some criterion (filter)
+
 ```{r}
 # split data frame based on a column 
-courses |> split(courses$學年) -> week6$dataSplit$byYear
+courses |> split(courses$學年) -> ntpuCourses$dataSplit$byYear
 
 # focus on only 107 school year
-targetCourses <- week6$dataSplit$byYear$`107` 
-
+targetCourses <- ntpuCourses$dataSplit$byYear$`107` 
+View(targetCourses)
 ## What courses are available on Wednesday?
 ### 1. filtered based on logical expressions
 pick <- grepl("週三", targetCourses$上課時間教室)
 head(pick)
-targetCourses[pick, ] |> 
+targetCourses[pick, ] -> ntpuCourses$wedCourseIn107
+ntpuCourses$wedCourseIn107 |> 
   dplyr::glimpse()
 
 ### 2. filtered based on positions
@@ -58,7 +61,7 @@ timePlace <-
 
 # logical expression: equivalent
 timePlace == "每週二5~6　文2F01"
-
+timePlace == "週三"
 # logical expression: contain
 grepl("週三", timePlace)
 ```
@@ -77,5 +80,129 @@ targetCourses$開課系所 |> class()
 targetCourses$開課系所 |> table() |> sort()
 ```
 
+  * table result is actually an integer atomic vector with element names. 
+
+
 ## Each 學院
+
+```{r}
+data.frame(
+  department = c("")
+)
+```
+
+# Factor
+
+```{r}
+bloodTypes <- c("AB", "AB", "A", "B", "A", "A", "B", "O", "O", "AB")
+```
+
+```{r}
+class(bloodTypes)
+```
+
+```{r}
+bloodTypes <- factor(bloodTypes)
+class(bloodTypes)
+```
+
+When R saves factor vector, the storage type becomes integer with a level table as extra mapping information
+```{r}
+levels(bloodTypes)
+```
+
+```{r}
+print(bloodTypes)
+```
+
+```{r}
+bloodTypes |> as.integer()
+```
+
+
+```{r}
+levels(bloodTypes)
+```
+
+```{r}
+bloodTypes2 <- factor(bloodTypes, levels = c("A", "B", "AB", "O"))
+levels(bloodTypes2)
+table(bloodTypes2)
+```
+
+```{r}
+table(bloodTypes)
+```
+
+
+```{r}
+targetCourses$開課系所 |> factor() ->
+  targetCourses$開課系所
+
+class(targetCourses$開課系所)
+```
+
+```{r}
+levels(targetCourses$開課系所)
+```
+
+# Ordered factor
+
+```{r}
+household_income <- c("low income", "low income", "middle income", "low income", "high income", "middle income", "high income", "high income", "middle income", "middle income")
+
+class(household_income)
+```
+
+```{r}
+household_income[[10]] > "low income"
+"middle income" > "low income"
+"m" > "l"
+```
+
+```{r}
+"a" > "b"
+"aa" > "ab"
+```
+
+```{r}
+household_income <- factor(household_income, ordered = T, levels = c("low income", "middle income", "high income"))
+```
+
+
+```{r}
+class(household_income)
+```
+
+```{r}
+household_income[[10]] == "high income"
+```
+
+
+```{r}
+levels(household_income) <- c("low income", "high income", "high income")
+```
+
+```{r}
+household_income
+```
+```{r}
+sample(
+  c("statistics", "finance", "economics", "sociology"), 
+  20, 
+  replace = T) -> departments
+```
+
+```{r}
+departments <- factor(departments)
+departments
+```
+```{r}
+school <- departments
+levels(school)
+levels(school) <- c("social science", "business", "social science", "statistics")
+
+school
+```
+
 
