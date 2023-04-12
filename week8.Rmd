@@ -63,8 +63,19 @@ timePlace == "每週二5~6　文2F01"
 grepl("週三", timePlace)
 ```
 
-## 
+# For each
+
+## Each 開課系所 
+
+-   How many courses were offered?
 
 ```{r}
-targetCourses |> View()
+targetCourses$開課系所 |> class()
 ```
+
+```{r}
+targetCourses$開課系所 |> table() |> sort()
+```
+
+## Each 學院
+
