@@ -62,3 +62,9 @@ timePlace == "每週二5~6　文2F01"
 # logical expression: contain
 grepl("週三", timePlace)
 ```
+
+## 
+
+```{r}
+targetCourses |> View()
+```
