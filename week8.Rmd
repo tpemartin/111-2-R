@@ -205,4 +205,31 @@ levels(school) <- c("social science", "business", "social science", "statistics"
 school
 ```
 
+# check column classes
+
+>  how to check the class of each column in a data frame in R 
+
+You can use the `sapply()` function to check the class of each column in a data frame in R. Here's an example:
+
+```R
+# create a sample dataframe
+df <- data.frame(name = c("Alice", "Bob", "Charlie"),
+                 age = c(25, 30, 35),
+                 married = c(TRUE, FALSE, TRUE),
+                 salary = c(50000, 60000, 70000))
+
+# use sapply to check the class of each column
+sapply(df, class)
+```
+
+This will output the class of each column in the data frame:
+
+```
+       name         age     married      salary 
+"character"   "numeric"   "logical"   "numeric" 
+```
+
+```{r}
+targetCourses
+```
 
