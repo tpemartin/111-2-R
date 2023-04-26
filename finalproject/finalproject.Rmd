@@ -33,12 +33,17 @@ correctDFColumnNames(dataForAll$countyMayor) ->
   dataForAll$countyMayor
 ```
 
+
+
 ```{r}
 saveRDS(dataForAll, file="dataForAll.Rds")
 ```
 
 
-# 補充
+
+# week 9: 補充
+
+
 ## 轉換資料型態
 ```{r}
 dataForAll$municipalityMayor <- data.frame(dataForAll$municipalityMayor, stringsAsFactors = F)
@@ -158,7 +163,7 @@ View(dataForAll$countyCouncillors)
 
 
 
-# Function
+## Function
 
 ```{r}
 {
@@ -184,6 +189,314 @@ test(a)
 
 b =5
 test(b)
+```
+
+
+
+# week 10
+
+```{r}
+dataForAll = readRDS("dataForAll.Rds")
+```
+
+## review
+
+```{r}
+View(dataForAll$municipalityMayor)
+```
+
+## which party wins
+
+```{r}
+df = dataForAll$municipalityMayor
+dfColnames = names(df)
+dfColnames
+df[2,]
+
+pos = {
+  df[2,] |>
+    as.numeric() |>
+    which.max()
+}
+dfColnames[[pos]]
+```
+
+### dplyr::summarise
+
+```{r}
+library(dplyr)
+starwars |>
+  summarise(
+   heightMaxPos  = which.max(height),
+   heightMax = max(height, na.rm = T)
+  )
+
+dplyr::glimpse(starwars)
+```
+### dplyr::group_by
+
+```{r}
+starwars |>
+  split(starwars$sex) -> starwarsSplit
+starwarsSplit$female |>
+  summarise(
+   heightMaxPos  = which.max(height),
+   heightMax = max(height, na.rm = T)
+  )
+starwarsSplit$hermaphroditic |>
+  summarise(
+   heightMaxPos  = which.max(height),
+   heightMax = max(height, na.rm = T)
+  )
+```
+
+Group data fram by its sex column values, and summarise...
+
+```{r}
+starwars |>
+  dplyr::group_by(sex) |>
+  summarise(
+   heightMaxPos  = which.max(height),
+   heightMax = max(height, na.rm = T)
+  )
+```
+
+# two formats
+
+```{r}
+# long format
+dfExample_long = data.frame(
+  share = c(0.8, 0.1, 0.1, 0.2, 0.45, 0.35),
+  party = c("a", "b", "c", "a", "b", "c"),
+  city = c("A","A","A", "B", "B", "B")
+)
+dfExample_long
+```
+
+```{r}
+# wide format
+dfExample_wide = data.frame(
+  city = c("A","B"),
+  a = c(0.8, 0.2),
+  b = c(0.1, 0.45),
+  c = c(0.1, 0.35)
+)
+dfExample_wide |> names()
+```
+
+### tidyr::pivot_longer
+
+```{r}
+dfExample_wide |>
+  tidyr::pivot_longer(cols=2:4,
+                      names_to = "part",
+                      values_to = "share")
+```
+
+```{r}
+dplyr::glimpse(df)
+
+df |> 
+  tidyr::pivot_longer(
+    cols = 2:9,
+    names_to = "party",
+    values_to = "voteShare"
+  ) |>
+  group_by(行政區別) |>
+  summarise(
+    winningParty = {
+      voteShare |> 
+        which.max() -> pos
+      party[[pos]]
+    }
+  )
+```
+
+```{r}
+dataForAll$countyMayor
+```
+
+```{r}
+names(dataForAll$countyMayor)
+```
+```{r}
+dataForAll$countyMayor |>
+  # turn df into longer format
+  tidyr::pivot_longer(
+    cols = 2:8,
+    names_to = "party",
+    values_to = "voteShare"
+  ) |>
+  # for each 行政區別 group,
+  group_by(行政區別) |>
+  # summarise winningParty
+  summarise(
+    winningParty = {
+      voteShare |> 
+        which.max() -> pos
+      party[[pos]]
+    }
+  ) 
+```
+
+## exercise
+
+```{r}
+df |> 
+  tidyr::pivot_longer(
+    cols = 2:9,
+    names_to = "party",
+    values_to = "voteShare"
+  ) -> dflong
+```
+
+### dplyr::filter
+
+```{r}
+dflong |>
+  dplyr::filter(
+    行政區別=="臺北市"
+  ) -> df_tpe
+```
+
+```{r}
+pos <- which(df_tpe$party == "中國國民黨")
+pos
+df_tpe$voteShare[[pos]]
+
+df_tpe$party
+pos <- which(df_tpe$party == "民主進步黨")
+pos
+df_tpe$voteShare[[pos]]
+
+pos <- which(!(df_tpe$party %in% 
+  c("民主進步黨","中國國民黨")))
+pos
+df_tpe$voteShare[pos] |>
+  as.numeric() |>
+  sum(na.rm=T)
+```
+
+```{r}
+df_tpe$party
+(df_tpe$party %in% 
+  c("民主進步黨","中國國民黨"))
+which(!(df_tpe$party %in% 
+  c("民主進步黨","中國國民黨")))
+```
+
+
+```{r}
+dflong |>
+  group_by(行政區別) |>
+  summarise(
+  voteShare_KMT = {
+    pos <- which(party == "中國國民黨")
+    
+    voteShare[[pos]]
+  },
+  voteShare_DPP = {
+    pos <- which(party == "民主進步黨")
+    voteShare[[pos]]
+  }, 
+  voteShare_Others = {
+    pos <- which(!(party %in% 
+      c("民主進步黨","中國國民黨")))
+    voteShare[pos] |>
+      as.numeric() |>
+      sum(na.rm=T)
+  }
+) |> View()
+```
+
+```{r}
+dataForAll$countyMayor |>
+  # turn df into longer format
+  tidyr::pivot_longer(
+    cols = 2:8,
+    names_to = "party",
+    values_to = "voteShare"
+  )  |>
+  group_by(行政區別) |>
+  summarise(
+  voteShare_KMT = {
+    pos <- which(party == "中國國民黨")
+    
+    voteShare[[pos]]
+  },
+  voteShare_DPP = {
+    pos <- which(party == "民主進步黨")
+    voteShare[[pos]]
+  }, 
+  voteShare_Others = {
+    pos <- which(!(party %in% 
+      c("民主進步黨","中國國民黨")))
+    voteShare[pos] |>
+      as.numeric() |>
+      sum(na.rm=T)
+  }
+) |> View()
+```
+
+```{r}
+dplyr::fun1(df,...)  # return df
+dplyr::fun2(df,...)
+```
+
+```{r}
+dplyr::fun1(df0) -> df1
+
+df0 |>
+  dplyr::fun1() -> df1
+```
+
+```{r}
+dplyr::fun2(df1)
+
+df1 |> 
+  dplyr::fun2()
+```
+
+
+```{r}
+df0 |>
+  dplyr::fun1() |>
+  dplyr::fun2()
+```
+
+
+### tidyr::pivot_wider
+
+
+```{r}
+dfExample$share |>
+  which.max() -> pos
+dfExample$party[[pos]]
+```
+
+
+```{r}
+dfExample |>
+  group_by(city) |>
+  summarise(
+   winningParty = {
+      share |>
+        which.max() -> pos
+      party[[pos]]
+    }
+  )
+```
+
+
+
+```{r}
+nameVect <- c("a","b","c")
+numVect <- c(21, 33, 25)
+pos = {
+  which.max(numVect)
+}
+nameVect[[pos]]
+
 ```
 
 
