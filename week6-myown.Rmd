@@ -1,0 +1,111 @@
+---
+title: "Week6"
+output: html_document
+date: "2023-03-29"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# econR2
+
+```{r}
+install.packages("remotes")
+remotes::install_github("tpemartin/econR2")
+```
+
+-   After installation, restart your R project.
+
+## Usage
+
+To download from Github.com
+
+-   Copy a Github link
+
+```         
+![](https://raw.githubusercontent.com/tpemartin/111-2-R/main/image/github-link.png){width="397"}
+```
+
+-   **Addins** \>
+
+    ![](https://raw.githubusercontent.com/tpemartin/111-2-R/main/image/github-download.png){width="512"}
+
+Once download addin has been executed, you can refresh its local content by
+
+-   **Addins** \>
+
+![](https://raw.githubusercontent.com/tpemartin/111-2-R/main/image/github-refresh.png){width="512"}
+
+# Project
+
+## Object to save progress
+
+```{r}
+# create an empty list
+week6 <- list()
+```
+
+## Download from dropbox
+
+```{r}
+dropboxlink = "https://www.dropbox.com/s/6vhwbxnzc0fz3is/90-107%E5%AD%B8%E5%B9%B4%E5%BA%A6%E5%A4%A7%E5%AD%B8%E9%83%A8%E8%AA%B2%E7%A8%8B%E8%B3%87%E6%96%99.csv?dl=1"
+```
+
+-   Original link has `dl=0`. We need `dl=1`
+
+```{r}
+courses <- readr::read_csv("https://www.dropbox.com/s/6vhwbxnzc0fz3is/90-107%E5%AD%B8%E5%B9%B4%E5%BA%A6%E5%A4%A7%E5%AD%B8%E9%83%A8%E8%AA%B2%E7%A8%8B%E8%B3%87%E6%96%99.csv?dl=1")
+```
+
+```{r}
+week6$data <- courses
+```
+
+-   `week6$data` is to retrieve the element with name `data`.
+
+-   however `data` element does not exist.
+
+## Creating new element
+
+> Retrieving a non-existing element is to create one.
+
+## Split by years
+
+> How to split a data frame based on a column in R
+
+### ChatGPT
+
+To split a data frame based on a column in R, you can use the `split()` function. Here is an example:
+
+```         
+# Create a sample data frame
+df <- data.frame(
+  name = c("Alice", "Bob", "Charlie", "David", "Eve"),
+  age = c(25, 30, 35, 40, 45),
+  gender = c("F", "M", "M", "M", "F")
+)
+
+# Split the data frame based on the gender column
+gender_split <- split(df, df$gender)
+
+# View the resulting list of data frames
+gender_split
+```
+
+In this example, we create a data frame `df` with three columns: `name`, `age`, and `gender`. We then use the `split()` function to split the data frame into a list of data frames based on the `gender` column. The resulting list `gender_split` contains two data frames, one for females and one for males.
+
+### in practice
+
+```{r}
+courses |> split(courses$學年) -> week6$dataSplit$byYear
+```
+
+```{r}
+week6$dataSplit$byYear$`107` |> View()
+```
+
+```{r}
+week6$dataSplit$byYear$`107` |> 
+  dplyr::glimpse()
+```

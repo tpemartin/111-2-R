@@ -37,3 +37,7 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+*.xls
+ntpuCourses.Rds
+temp/week6.Rmd
+A030101015.csv

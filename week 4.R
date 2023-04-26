@@ -1,6 +1,7 @@
 library(readxl)
 exchangeRateData <- read_excel("日資料 (2002年迄今).xls",
                                skip = 5)
+
 dplyr::glimpse(
   exchangeRateData
 )

@@ -1,0 +1,67 @@
+---
+title: "week 5"
+output: html_document
+date: "2023-03-22"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Download 
+
+```{r}
+library(readxl)
+exchangeRateData <- read_excel("日資料 (2002年迄今).xls",
+skip = 5)
+
+```
+
+
+```{r}
+View(exchangeRateData)
+```
+
+```{r}
+# check class of each column of a data frame
+```
+
+```{r}
+sapply(exchangeRateData, class)
+```
+
+```{r}
+# remove the first column of a data frame
+exchangeRateData <- exchangeRateData[,-1]
+```
+
+```{r}
+# remove the first row of a data frame
+exchangeRateData <- exchangeRateData[-1,]
+```
+
+```{r}
+# change each row of a data frame to numeric class
+i=2
+## change one row of a data frame to numeric class
+exchangeRateData[[i]] |> as.numeric() -> exchangeRateData[[i]]
+
+```
+
+```{r}
+for(i in 2:ncol(exchangeRateData)){
+  ## change one row of a data frame to numeric class
+  exchangeRateData[[i]] |> as.numeric() -> exchangeRateData[[i]]
+}
+```
+
+
+```{r}
+library(ggplot2)
+  ggplot(
+    data=exchangeRateData,
+    aes(x=日期)) +
+  geom_line(aes(y=新台幣), color="red", show.legend = T)+
+  geom_line(aes(y=日圓), color="blue", show.legend = T)
+```
+
