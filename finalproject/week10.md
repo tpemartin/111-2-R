@@ -99,3 +99,24 @@ dfExample_wide = data.frame(
 )
 ```
 
+## exercise
+
+```{r}
+df |> 
+  tidyr::pivot_longer(
+    cols = 2:9,
+    names_to = "party",
+    values_to = "voteShare"
+  )
+```
+
+
+```{r}
+summarise(
+  voteShare_KMT =
+  voteShare_DPP =
+  voteShare_Others =
+)
+```
+
+
