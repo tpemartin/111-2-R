@@ -50,7 +50,29 @@ starwars |>
 ```
 ```{r}
 dfExample = data.frame(
-  share = c(0.8, 0.1, 0.1),
-  party = c("a", "b", "c")
+  share = c(0.8, 0.1, 0.1, 0.2, 0.45, 0.35),
+  party = c("a", "b", "c", "a", "b", "c"),
+  city = c("A","A","A", "B", "B", "B")
 )
+dfExample
 ```
+
+```{r}
+dfExample$share |>
+  which.max() -> pos
+dfExample$party[[pos]]
+```
+
+
+```{r}
+dfExample |>
+  group_by(city) |>
+  summarise(
+   winningParty = {
+      share |>
+        which.max() -> pos
+      party[[pos]]
+    }
+  )
+```
+
