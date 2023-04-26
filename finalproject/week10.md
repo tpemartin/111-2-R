@@ -81,7 +81,7 @@ dfExample |>
 
 ```{r}
 # long format
-dfExample = data.frame(
+dfExample_long = data.frame(
   share = c(0.8, 0.1, 0.1, 0.2, 0.45, 0.35),
   party = c("a", "b", "c", "a", "b", "c"),
   city = c("A","A","A", "B", "B", "B")
@@ -91,7 +91,7 @@ dfExample
 
 ```{r}
 # wide format
-data.frame(
+dfExample_wide = data.frame(
   city = c("A","B"),
   a = c(0.8, 0.2),
   b = c(0.1, 0.45),
