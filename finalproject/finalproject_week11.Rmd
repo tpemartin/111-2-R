@@ -12,42 +12,50 @@ source("R/helpers.R")
 #資料匯入
 ```{r}
 dataForAll <- list()
-
-dataForAll$municipalityMayor <- read_excel(
-  "data/直轄市長選舉各政黨、無黨籍及未經政黨推薦之候選人得票數(率)表.xls", col_names = F)
-dataForAll$municipalityCouncillors <- read_excel(
-  "data/直轄市議員選舉當選人資歷統計表.xls", sheet = 2, col_names = F)
-dataForAll$countyMayor <- read_excel(
-  "data/縣(市)長選舉各政黨、無黨籍及未經政黨推薦之候選人得票數(率)表.xls", col_names = F)
-dataForAll$countyCouncillors <- read_excel(
-  "data/縣(市)議員選舉當選人資歷統計表.xls", sheet = 2, col_names = F)
-View(dataForAll$countyCouncillors)
-class(dataForAll$countyCouncillors)
 ```
 
-## correct columnames
+
+### 市長
+
+```{r}
+dataForAll$municipalityMayor <- read_excel(
+  "data/直轄市長選舉各政黨、無黨籍及未經政黨推薦之候選人得票數(率)表.xls", col_names = F)
+dataForAll$countyMayor <- read_excel(
+  "data/縣(市)長選舉各政黨、無黨籍及未經政黨推薦之候選人得票數(率)表.xls", col_names = F)
+```
+
+#### correct columnames
 
 ```{r}
 correctDFColumnNames(df=dataForAll$municipalityMayor) ->
   dataForAll$municipalityMayor
 correctDFColumnNames(dataForAll$countyMayor) ->
   dataForAll$countyMayor
+
 ```
+
+
+
+### 議員
 
 ```{r}
-saveRDS(dataForAll, file="dataForAll.Rds")
+dataForAll$municipalityCouncillors <-  read_excel(
+  "data/直轄市議員選舉當選人資歷統計表.xls", sheet = 2, col_names = T, skip = 2)
+dataForAll$countyCouncillors <- read_excel(
+  "data/縣(市)議員選舉當選人資歷統計表.xls", sheet = 2, col_names = T, skip=2)
+
+
+
 ```
 
-```{r}
-dataForAll$municipalityMayor
-```
 
-
-# 拉長
 
 ```{r}
 dataForAll=readRDS("dataForAll.Rds")
 ```
+
+# 拉長
+
 
 ```{r}
 dataForAll$municipalityMayor |>
@@ -111,6 +119,8 @@ dfTaipei |>
   )
 ```
 
+## 各行政區市長黨派
+
 ### dplyr::group_by
 
   * replace `filter` with `group_by`
@@ -129,7 +139,7 @@ targetDF |>
     黨派[[pos]]
   }
 # getWinningParty(黨派,得票數)
-  )
+  ) -> dataForAll$winningParty$municipalMayor
 ```
 
 ```{r}
@@ -144,7 +154,11 @@ dataForAllLong$countyMayor |>
   dplyr::summarise(
     winningParty = 
       getWinningParty(黨派,得票數)
-  )
+  ) -> dataForAll$winningParty$countyMayor
+```
+
+```{r}
+saveRDS(dataForAll, "dataForAll.Rds")
 ```
 
 
@@ -175,11 +189,25 @@ getWinningParty = function(party, voteShare){
 getWinningParty(dfTaipei$黨派, dfTaipei$得票數)
 ```
 
+## 議會
+
+```{r}
+dataForAll$municipalityCouncillors |>
+  dplyr::glimpse()
+```
+### 格式更正
+
+```{r}
+dataForAll$municipalityCouncillors |> View()
+```
+
+
 
 ```{r}
 View(mayorTable)
 View(councillorTable)
 ```
+
 
 # 整理-市長
 ```{r}
