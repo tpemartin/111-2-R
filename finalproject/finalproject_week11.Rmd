@@ -41,6 +41,7 @@ correctDFColumnNames(dataForAll$countyMayor) ->
 ```{r}
 dataForAll$municipalityCouncillors <-  read_excel(
   "data/直轄市議員選舉當選人資歷統計表.xls", sheet = 2, col_names = T, skip = 2)
+
 dataForAll$countyCouncillors <- read_excel(
   "data/縣(市)議員選舉當選人資歷統計表.xls", sheet = 2, col_names = T, skip=2)
 
@@ -51,6 +52,9 @@ dataForAll$countyCouncillors |>
   dplyr::glimpse()
 ```
 
+```{r}
+saveRDS(dataForAll, file="dataForAll.Rds")
+```
 
 
 ```{r}
@@ -192,6 +196,10 @@ saveRDS(dataForAll, "dataForAll.Rds")
 ## 議會
 
 ```{r}
+dataForAll = readRDS("dataForAll.Rds")
+```
+
+```{r}
 dataForAll$winningParty$countyMayor |> 
   dplyr::glimpse()
 ```
@@ -202,6 +210,7 @@ dataForAll$winningParty$municipalMayor |>
 
 
 ```{r}
+dataForAll$municipalityCouncillors
 dataForAll$municipalityCouncillors |>
   dplyr::glimpse()
 ```
