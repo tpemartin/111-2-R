@@ -172,6 +172,13 @@ dataForAllLong$municipalityMayor |>
 ```
 
 ```{r}
+getWinningParty = function(party, voteShare){
+      pos<-which.max(voteShare)
+      return(party[[pos]])
+}
+```
+
+```{r}
 dataForAllLong$countyMayor |> View()
 ```
 
@@ -196,24 +203,74 @@ saveRDS(dataForAll, "dataForAll.Rds")
 ## 議會
 
 ```{r}
-dataForAll = readRDS("dataForAll.Rds")
+dataForAllLong$municipalityCouncillors |> View()
 ```
 
 ```{r}
-dataForAll$winningParty$countyMayor |> 
-  dplyr::glimpse()
-```
-```{r}
-dataForAll$winningParty$municipalMayor |> 
-  dplyr::glimpse()
+dataForAllLong$municipalityCouncillors |>
+  dplyr::group_by(
+    行政區別
+  ) |>
+  dplyr::summarise(
+    councilMajorityParty = getWinningParty(黨派,席次),
+    totalSeats = sum(席次, na.rm=T),
+    majoritySeatNumber = {
+      max(席次, na.rm=T)
+    }
+  ) -> dataForAll$winningParty$municipalityCouncillors
 ```
 
 
 ```{r}
-dataForAll$municipalityCouncillors
-dataForAll$municipalityCouncillors |>
-  dplyr::glimpse()
+dataForAllLong$countyCouncillors |>
+  dplyr::group_by(
+    行政區別
+  ) |>
+  dplyr::summarise(
+    councilMajorityParty = getWinningParty(黨派,席次),
+    totalSeats = sum(席次, na.rm=T),
+    majoritySeatNumber = {
+      max(席次, na.rm=T)
+    }
+  ) -> dataForAll$winningParty$countyCouncillors
+View(dataForAll$winningParty$countyCouncillors)
 ```
+
+## 合併
+
+```{r}
+dataForAll$winningParty$municipalMayor |> View()
+```
+
+### dplyr::xxx_join
+
+```{r}
+dataForAll$winningParty$municipalMayor |>
+  dplyr::left_join(
+    dataForAll$winningParty$municipalityCouncillors,
+    by=c("行政區別")
+  ) ->
+  dataForAll$result$municipal
+
+View(dataForAll$result$municipal)
+```
+
+```{r}
+dataForAll$winningParty$countyMayor |>
+  dplyr::left_join(
+    dataForAll$winningParty$countyCouncillors,
+    by="行政區別"
+  ) ->
+  dataForAll$result$county
+
+View(dataForAll$result$county)
+```
+
+```{r}
+dataForAll$countyCouncillors |> View()
+```
+
+
 ### 格式更正
 
 ```{r}
