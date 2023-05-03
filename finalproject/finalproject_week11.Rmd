@@ -1,0 +1,199 @@
+
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(tidyr)
+library(tidyselect)
+source("R/helpers.R")
+```
+
+#資料匯入
+```{r}
+dataForAll <- list()
+
+dataForAll$municipalityMayor <- read_excel(
+  "data/直轄市長選舉各政黨、無黨籍及未經政黨推薦之候選人得票數(率)表.xls", col_names = F)
+dataForAll$municipalityCouncillors <- read_excel(
+  "data/直轄市議員選舉當選人資歷統計表.xls", sheet = 2, col_names = F)
+dataForAll$countyMayor <- read_excel(
+  "data/縣(市)長選舉各政黨、無黨籍及未經政黨推薦之候選人得票數(率)表.xls", col_names = F)
+dataForAll$countyCouncillors <- read_excel(
+  "data/縣(市)議員選舉當選人資歷統計表.xls", sheet = 2, col_names = F)
+View(dataForAll$countyCouncillors)
+class(dataForAll$countyCouncillors)
+```
+
+## correct columnames
+
+```{r}
+correctDFColumnNames(df=dataForAll$municipalityMayor) ->
+  dataForAll$municipalityMayor
+correctDFColumnNames(dataForAll$countyMayor) ->
+  dataForAll$countyMayor
+```
+
+```{r}
+saveRDS(dataForAll, file="dataForAll.Rds")
+```
+
+```{r}
+dataForAll$municipalityMayor
+```
+
+
+# 拉長
+```{r}
+dataForAllLong <- list()
+dataForAll$municipalityMayor |> tidyr::pivot_longer(
+  cols = c(2:9), names_to ="黨派", values_to ="得票數"
+  ) -> dataForAllLong$municipalityMayor
+dataForAll$countyMayor |> tidyr::pivot_longer(
+  cols = c(2:8), names_to ="黨派", values_to ="得票數"
+  ) -> dataForAllLong$countyMayor
+dataForAll$municipalityCouncillors |> tidyr::pivot_longer(
+  cols = c(2:11), names_to ="黨派", values_to ="席次"
+  ) -> dataForAllLong$municipalityCouncillors
+dataForAll$countyCouncillors |> tidyr::pivot_longer(
+  cols = c(2:12), names_to ="黨派", values_to ="席次"
+  ) -> dataForAllLong$countyCouncillors
+```
+
+```{r}
+View(dataForAllLong$municipalityMayor)
+View(dataForAllLong$countyMayor)
+View(dataForAllLong$municipalityCouncillors)
+View(dataForAllLong$countyCouncillors)
+```
+
+#合併
+```{r}
+mayorTable <- dataForAllLong$municipalityMayor %>% full_join(dataForAllLong$countyMayor, by= c('行政區別', '黨派', '得票數'))
+councillorTable <- dataForAllLong$municipalityCouncillors %>% full_join(dataForAllLong$countyCouncillors, by= c('行政區別', '黨派', '席次'))
+mayorTable <- data.frame(mayorTable, stringsAsFactors = F)
+councillorTable <- data.frame(councillorTable, stringsAsFactors = F)
+```
+
+```{r}
+View(mayorTable)
+View(councillorTable)
+```
+
+# 整理-市長
+```{r}
+#行列再次互換
+spread(mayorTable, key = "行政區別", value = "得票數")->mayorTableNew
+#補入嘉義市選舉結果
+mayorTableNew$"嘉義市" =c(59874,0,0,0,0,0,0,0,32790,0,0)
+#下行名
+rownames(mayorTableNew) <-mayorTableNew$黨派[1:11]
+mayorTableNew <- mayorTableNew[-1]
+#處理數值
+mayorTableNew <- mutate_all(mayorTableNew, ~replace(., is.na(.), 0))
+#把character選出來
+char_columns <- sapply(mayorTableNew, is.character)
+#character 變成numeric
+mayorTableNew[ , char_columns] <- as.data.frame(apply(mayorTableNew[ , char_columns], 2, as.numeric))
+mayorTableNew <- data.frame(mayorTableNew, stringsAsFactors = F)
+#排序縣市
+mayorTableNew[,order(names(mayorTableNew))] -> mayorTableNew
+```
+
+```{r}
+View(mayorTableNew)
+str(mayorTableNew)
+```
+
+# 整理-議員
+```{r}
+#議員 行列再次互換
+spread(councillorTable, key = "行政區別", value = "席次")->councillorTableNew
+#下行名
+rownames(councillorTableNew) <- councillorTableNew$黨派[1:14]
+councillorTableNew <- councillorTableNew[-1]
+#處理數值
+councillorTableNew <- mutate_all(councillorTableNew, ~replace(., is.na(.), 0))
+char_columns2 <- sapply(councillorTableNew, is.character)
+councillorTableNew[ , char_columns2] <- as.data.frame(apply(councillorTableNew[ , char_columns2], 2, as.numeric))
+councillorTableNew <- data.frame(councillorTableNew, stringsAsFactors = F)
+#排序縣市
+councillorTableNew[,order(names(councillorTableNew))] ->councillorTableNew
+```
+
+```{r}
+View(councillorTableNew)
+str(councillorTableNew)
+```
+
+```{r}
+sapply ( mayorTableNew, max )
+sapply ( councillorTableNew, max )
+```
+
+```{r}
+names(mayorTableNew)
+names(councillorTableNew)
+```
+
+# 合併
+```{r}
+summarizedList =list()
+  
+#議員
+for(.x in colnames(mayorTableNew)){
+  mayorTableNew[[.x]] -> targetFeature
+  councillorTableNew[[.x]] -> targetFeature2
+summarizedList[[.x]] <-list(
+  "市長當選人黨派" = rownames(mayorTableNew[which(targetFeature == max(targetFeature)),]),
+  # "市長當選人黨派" = rownames(mayorTableNew[1,]),
+  "議員多數黨派" = rownames(councillorTableNew[which(targetFeature2 == max(targetFeature2)),]),
+  "是否全面執政" = identical(rownames(mayorTableNew[which(targetFeature == max(targetFeature)),]) , rownames(councillorTableNew[which(targetFeature2 == max(targetFeature2)),]))
+  )
+}
+```
+
+```{r}
+View(summarizedList)
+#summarizedList <- data.frame(summarizedList)
+```
+
+#二次合併
+
+
+```{r}
+#方法一
+summarizedList2 <- mapply(c, summarizedList$南投縣,summarizedList$嘉義市,summarizedList$嘉義縣,summarizedList$基隆市,summarizedList$宜蘭縣,summarizedList$屏東縣,summarizedList$彰化縣,summarizedList$新北市,summarizedList$新竹市,summarizedList$新竹縣,summarizedList$桃園市,summarizedList$澎湖縣,summarizedList$臺中市,summarizedList$臺北市,summarizedList$臺南市,summarizedList$臺東縣,summarizedList$花蓮縣,summarizedList$苗栗縣,summarizedList$連江縣,summarizedList$金門縣,summarizedList$雲林縣,summarizedList$高雄市 ,SIMPLIFY = F)
+summarizedList2 <- data.frame(summarizedList2)
+```
+
+```{r}
+#方法二
+summarizedList2 <- summarizedList$南投縣
+summarizedList2 <- data.frame(summarizedList2)
+summarizedList2[2,] <- summarizedList$嘉義市
+summarizedList2[3,] <- summarizedList$嘉義縣
+summarizedList2[4,] <- summarizedList$基隆市
+summarizedList2[5,] <- summarizedList$宜蘭縣
+summarizedList2[6,] <- summarizedList$屏東縣
+summarizedList2[7,] <- summarizedList$彰化縣
+summarizedList2[8,] <- summarizedList$新北市
+summarizedList2[9,] <- summarizedList$新竹市
+summarizedList2[10,] <- summarizedList$新竹縣
+summarizedList2[11,] <- summarizedList$桃園市
+summarizedList2[12,] <- summarizedList$澎湖縣
+summarizedList2[13,] <- summarizedList$臺中市
+summarizedList2[14,] <- summarizedList$臺北市
+summarizedList2[15,] <- summarizedList$臺南市
+summarizedList2[16,] <- summarizedList$臺東縣
+summarizedList2[17,] <- summarizedList$花蓮縣
+summarizedList2[18,] <- summarizedList$苗栗縣
+summarizedList2[19,] <- summarizedList$連江縣
+summarizedList2[20,] <- summarizedList$金門縣
+summarizedList2[21,] <- summarizedList$雲林縣
+summarizedList2[22,] <- summarizedList$高雄市
+rownames(summarizedList2) <- colnames(mayorTableNew)
+```
+
+
+
+
