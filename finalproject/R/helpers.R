@@ -1,4 +1,7 @@
-
+getWinningParty = function(party, voteShare){
+  pos<-which.max(voteShare)
+  return(party[[pos]])
+}
 #' change data frame column of mayor data
 #'
 #' @param df the data frame that needs to do column rename

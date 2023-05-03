@@ -5,7 +5,8 @@ library(tidyverse)
 library(readxl)
 library(tidyr)
 library(tidyselect)
-source("R/helpers.R")
+# import helper functions
+source("R/helpers.R") 
 ```
 
 #資料匯入
@@ -43,11 +44,22 @@ dataForAll$municipalityMayor
 
 
 # 拉長
+
+```{r}
+dataForAll=readRDS("dataForAll.Rds")
+```
+
+```{r}
+dataForAll$municipalityMayor |>
+  dplyr::glimpse()
+```
+
 ```{r}
 dataForAllLong <- list()
 dataForAll$municipalityMayor |> tidyr::pivot_longer(
   cols = c(2:9), names_to ="黨派", values_to ="得票數"
   ) -> dataForAllLong$municipalityMayor
+dataForAllLong$municipalityMayor |> View()
 dataForAll$countyMayor |> tidyr::pivot_longer(
   cols = c(2:8), names_to ="黨派", values_to ="得票數"
   ) -> dataForAllLong$countyMayor
@@ -73,6 +85,96 @@ councillorTable <- dataForAllLong$municipalityCouncillors %>% full_join(dataForA
 mayorTable <- data.frame(mayorTable, stringsAsFactors = F)
 councillorTable <- data.frame(councillorTable, stringsAsFactors = F)
 ```
+
+## 台北市哪一黨勝出
+
+### dplyr::filter
+
+```{r}
+dataForAllLong$municipalityMayor |> dplyr::glimpse()
+```
+```{r}
+targetDF = dataForAllLong$municipalityMayor
+# filter 台北市
+targetDF |>
+  dplyr::filter(
+    行政區別 == "臺北市" # logical expression
+  )  -> dfTaipei
+```
+
+### dplyr::summarise
+
+```{r}
+dfTaipei |>
+  dplyr::summarise(
+    winningParty = getWinningParty(黨派,得票數)
+  )
+```
+
+### dplyr::group_by
+
+  * replace `filter` with `group_by`
+  
+```{r}
+targetDF |>
+  # dplyr::filter(
+  #   行政區別 == "臺北市" # logical expression
+  # ) |>
+  dplyr::group_by(
+    行政區別
+  ) |>
+  dplyr::summarise(
+  winningParty = {
+    pos<-which.max(得票數)
+    黨派[[pos]]
+  }
+# getWinningParty(黨派,得票數)
+  )
+```
+
+```{r}
+dataForAllLong$countyMayor |> View()
+```
+
+```{r}
+dataForAllLong$countyMayor |>
+  dplyr::group_by(
+    行政區別
+  ) |>
+  dplyr::summarise(
+    winningParty = 
+      getWinningParty(黨派,得票數)
+  )
+```
+
+
+```{r}
+dfTaipei$黨派
+dfTaipei$得票數
+{
+  pos<-which.max(dfTaipei$得票數)
+  dfTaipei$黨派[[pos]]
+}
+```
+
+```{r}
+party = dfTaipei$黨派
+voteShare = dfTaipei$得票數
+{
+  pos<-which.max(voteShare)
+  party[[pos]]
+}
+```
+
+```{r}
+getWinningParty = function(party, voteShare){
+  pos<-which.max(voteShare)
+  return(party[[pos]])
+}
+
+getWinningParty(dfTaipei$黨派, dfTaipei$得票數)
+```
+
 
 ```{r}
 View(mayorTable)
