@@ -45,7 +45,10 @@ dataForAll$countyCouncillors <- read_excel(
   "data/縣(市)議員選舉當選人資歷統計表.xls", sheet = 2, col_names = T, skip=2)
 
 
-
+dataForAll$municipalityCouncillors |> 
+  dplyr::glimpse()
+dataForAll$countyCouncillors |>
+  dplyr::glimpse()
 ```
 
 
@@ -67,7 +70,7 @@ dataForAllLong <- list()
 dataForAll$municipalityMayor |> tidyr::pivot_longer(
   cols = c(2:9), names_to ="黨派", values_to ="得票數"
   ) -> dataForAllLong$municipalityMayor
-dataForAllLong$municipalityMayor |> View()
+# dataForAllLong$municipalityMayor |> View()
 dataForAll$countyMayor |> tidyr::pivot_longer(
   cols = c(2:8), names_to ="黨派", values_to ="得票數"
   ) -> dataForAllLong$countyMayor
@@ -86,13 +89,6 @@ View(dataForAllLong$municipalityCouncillors)
 View(dataForAllLong$countyCouncillors)
 ```
 
-#合併
-```{r}
-mayorTable <- dataForAllLong$municipalityMayor %>% full_join(dataForAllLong$countyMayor, by= c('行政區別', '黨派', '得票數'))
-councillorTable <- dataForAllLong$municipalityCouncillors %>% full_join(dataForAllLong$countyCouncillors, by= c('行政區別', '黨派', '席次'))
-mayorTable <- data.frame(mayorTable, stringsAsFactors = F)
-councillorTable <- data.frame(councillorTable, stringsAsFactors = F)
-```
 
 ## 台北市哪一黨勝出
 
@@ -112,55 +108,7 @@ targetDF |>
 
 ### dplyr::summarise
 
-```{r}
-dfTaipei |>
-  dplyr::summarise(
-    winningParty = getWinningParty(黨派,得票數)
-  )
-```
-
-## 各行政區市長黨派
-
-### dplyr::group_by
-
-  * replace `filter` with `group_by`
-  
-```{r}
-targetDF |>
-  # dplyr::filter(
-  #   行政區別 == "臺北市" # logical expression
-  # ) |>
-  dplyr::group_by(
-    行政區別
-  ) |>
-  dplyr::summarise(
-  winningParty = {
-    pos<-which.max(得票數)
-    黨派[[pos]]
-  }
-# getWinningParty(黨派,得票數)
-  ) -> dataForAll$winningParty$municipalMayor
-```
-
-```{r}
-dataForAllLong$countyMayor |> View()
-```
-
-```{r}
-dataForAllLong$countyMayor |>
-  dplyr::group_by(
-    行政區別
-  ) |>
-  dplyr::summarise(
-    winningParty = 
-      getWinningParty(黨派,得票數)
-  ) -> dataForAll$winningParty$countyMayor
-```
-
-```{r}
-saveRDS(dataForAll, "dataForAll.Rds")
-```
-
+#### summarise 等號右邊
 
 ```{r}
 dfTaipei$黨派
@@ -189,7 +137,69 @@ getWinningParty = function(party, voteShare){
 getWinningParty(dfTaipei$黨派, dfTaipei$得票數)
 ```
 
+```{r}
+dfTaipei |>
+  dplyr::summarise(
+    winningParty = getWinningParty(黨派,得票數)
+  )
+```
+
+## 各行政區市長黨派
+
+### dplyr::group_by
+
+  * replace `filter` with `group_by`
+  
+```{r}
+dataForAllLong$municipalityMayor |>
+  # dplyr::filter(
+  #   行政區別 == "臺北市" # logical expression
+  # ) |>
+  dplyr::group_by(
+    行政區別
+  ) |>
+  dplyr::summarise(
+    winningParty = {
+      pos<-which.max(得票數)
+      黨派[[pos]]
+    }
+# getWinningParty(黨派,得票數)
+  ) -> dataForAll$winningParty$municipalMayor
+```
+
+```{r}
+dataForAllLong$countyMayor |> View()
+```
+
+```{r}
+dataForAllLong$countyMayor |>
+  dplyr::group_by(
+    行政區別
+  ) |>
+  dplyr::summarise(
+    winningParty = 
+      getWinningParty(黨派,得票數)
+  ) -> dataForAll$winningParty$countyMayor
+```
+
+```{r}
+saveRDS(dataForAll, "dataForAll.Rds")
+```
+
+
+
+
 ## 議會
+
+```{r}
+dataForAll$winningParty$countyMayor |> 
+  dplyr::glimpse()
+```
+```{r}
+dataForAll$winningParty$municipalMayor |> 
+  dplyr::glimpse()
+```
+
 
 ```{r}
 dataForAll$municipalityCouncillors |>
