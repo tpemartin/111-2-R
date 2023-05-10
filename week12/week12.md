@@ -1,6 +1,9 @@
 
 # Manage your project with GitHub
 
-  * Publish to Github: <https://www.figma.com/file/1Gn7uPVa52tWFrOi3ZRusY/flow-chart?type=design&node-id=2-2411&t=liGRu4Vk5qZcLlsV-4>
+## Create a new repository
 
-  * Create, commit and push: <https://www.figma.com/file/1Gn7uPVa52tWFrOi3ZRusY/flow-chart?type=design&node-id=4%3A2604&t=liGRu4Vk5qZcLlsV-1>
+![Publish to GitHub](Publish%20to%20GitHub.png)
+
+## Commit Push
+![](Manage%20project.png)
